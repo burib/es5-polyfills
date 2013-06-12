@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <style>
+        * { margin: 0; padding: 0; border: 0;}
+    </style>
+    <style>
+        #qunit-header {
+
+        }
+    </style>
+    <link rel="stylesheet" href="../qunit/qunit-1.11.0.css" />
+</head>
+<body>
+    <div id="qunit"></div>
+
+<script src="../dist/es5-array.min.js"></script>
+<script src="../qunit/qunit-1.11.0.js"></script>
+<script>
+    var myArray,
+        newArray,
+        extraString = ' Fruit';
+
+    module( "array polyfills test", {
+        setup: function() {
+            myArray = ["apple", "banana", "kiwi", "apple", "banana", "melon"];
+            newArray = [];
+            ok( typeof myArray !== undefined, "is myArray defined?" );
+        }, teardown: function() {
+            myArray = null;
+            newArray = [];
+        }
+    });
+    test( "Array.indexOf ( indexOf 'apple' )", function() {
+      strictEqual( myArray.indexOf("apple"), 0, "Returns the first (least) element of an element from the Array or -1 if not found" );
+    });
+    test( "Array.indexOf ( indexOf 'pear' )", function() {
+      strictEqual( myArray.indexOf("pear"), -1, "Returns the first (least) element of an element from the Array or -1 if not found" );
+    });
+
+    test( "Array.lastIndexOf (lastIndexOf 'apple' ) ", function() {
+      strictEqual( myArray.lastIndexOf("apple"), 3, "Returns the last (greatest) element of an element from the Array or -1 if not found" );
+    });
+    test( "Array.lastIndexOf (lastIndexOf 'banana' )", function() {
+      strictEqual( myArray.lastIndexOf("banana"), 4, "Returns the last (greatest) element of an element from the Array or -1 if not found" );
+    });
+    test( "Array.lastIndexOf (lastIndexOf 'banana' )", function() {
+      strictEqual( myArray.lastIndexOf("pear"), -1, "Returns the last (greatest) element of an element from the Array or -1 if not found" );
+    });
+
+    test( "Array.forEach", function() {
+        var success = true,
+            i = 0;
+        myArray.forEach(function (key,value) {
+            if (key !== myArray[i++]) success = false;
+        });
+
+        ok( success, "calls a function for each element in the array" );
+    });
+
+    test( "Array.every ( every element should match the condition )", function() {
+        strictEqual( myArray.every(function (value, index, array) { return value.length > 1; }), true, "Returns true if every element in the array satisfies the provided testing function" );
+    });
+
+    test( "Array.every ( every element should fail )", function() {
+        strictEqual( myArray.every(function (value, index, array) { return value.length > 5; }), false, "Returns true if every element in the array satisfies the provided testing function" );
+    });
+
+    test( "Array.some ( expects that at least 1 element matches the condition )", function() {
+        strictEqual( myArray.some(function (value, index, array) { return value.length < 5; }), true, "Returns true if every element in the array satisfies the provided testing function" );
+    });
+
+    test( "Array.some ( expects that at least 1 element fails the condition) ", function() {
+        strictEqual( myArray.some(function (value, index, array) { return value.length > 6; }), false, "Returns true if every element in the array satisfies the provided testing function" );
+    });
+
+    test( "Array.map", function() {
+        newArray = myArray.map(function (value, index, array) {
+            return value + extraString;
+        });
+
+        success = true;
+        for (i = 0; i < newArray.length; i++) {
+            if ( newArray[i].length - extraString.length !==  myArray[i].length) success = false;
+        };
+
+        ok(success, "creates a new array with the results of calling a provided function on every element in the array" )
+    });
+
+    test( "Array.filter", function() {
+        newArray = myArray.filter(function (value, index, array) { return value.length > 5 });
+
+        strictEqual(newArray.length, 2, "creates a new array with all of the elements of the array for which the provided filterintg fn return true");
+    });
+    test( "Array.reduce", function() {
+        myArray = [0,1,2,3,4];
+        newArray = myArray.reduce(function (previousValue, currentValue, index, array) { return previousValue + currentValue; });
+        /**
+
+        1.          0 plus 1 = 1
+        2.          1 plus 2 = 3
+        3.          3 plus 3 = 6
+        4.          6 plus 4 = 10
+
+        */
+
+        strictEqual(newArray, 10, "");
+    });
+
+    test( "Array.reduceRight", function() {
+        myArray = [1,2,3,4];
+        newArray = myArray.reduceRight(function (previousValue, currentValue, index, array) { return previousValue * currentValue; });
+        /**
+
+        1.          4 * 3 = 12
+        2.          12 * 2 = 24
+        3.          24 * 1 = 24
+
+        */
+
+        strictEqual(newArray, 24, "");
+    });
+
+
+    module( "function polyfills test", {
+        setup: function() {
+
+        }, teardown: function() {
+
+        }
+    });
+
+    test( "dummy test", function() {
+        strictEqual( true, true, "Dummy test which should be green / true." );
+    });
+</script>
+</body>
+</html>

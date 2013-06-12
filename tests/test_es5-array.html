@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <style>
+        ul li { margin: 3px 0; padding: 3px; list-style-type: decimal; }
+        .pass { background-color: #00FA9A; }
+        .pass:before {
+            content: 'PASSED: ';
+            color:  #008000;
+            font-weight: bold;
+        }
+        .fail { background-color: #F08080; }
+        .fail:before {
+            content: 'FAILED: ';
+            color: #B22222;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<ul id="output"></ul>
+
+<script>
+    var output = document.getElementById('output');
+    function assert( outcome, description ) {
+        var li = document.createElement('li');
+        li.className = outcome ? 'pass' : 'fail';
+        li.appendChild( document.createTextNode( description ) );
+        output.appendChild(li);
+    };
+    function addEmptyField(text) {
+        var li = document.createElement('li');
+        li.appendChild( document.createTextNode( text ) );
+        output.appendChild(li);
+    }
+</script>
+<script>
+    addEmptyField(' Test if browser natively support the following array methods: ');
+    assert( !Array.prototype.every === false, 'Array.every');
+    assert( !Array.prototype.filter === false, 'Array.filter');
+    assert( !Array.prototype.forEach === false, 'Array.forEach');
+    assert( !Array.prototype.indexOf === false, 'Array.indexOf');
+    assert( !Array.prototype.lastIndexOf === false, 'Array.lastIndexOf');
+    assert( !Array.isArray === false, 'Array.isArray');
+    assert( !Array.prototype.map === false, 'Array.map');
+    assert( !Array.prototype.reduce === false, 'Array.reduce');
+    assert( !Array.prototype.reduceRight === false, 'Array.reduceRight');
+    assert( !Array.prototype.some === false, 'Array.some');
+    addEmptyField(':::::: Test if browser natively support the following function methods:::::: ');
+    assert( !Function.prototype.bind === false, 'Function.bind');
+</script>
+
+<script src="../dist/es5-array.min.js"></script>
+
+<script>
+
+    var myArray = ["apple", "banana", "kiwi", "apple", "banana", "melon"],
+        transformedArray,
+        i = 0,
+        success = true,
+        extraString = " Fruit";
+
+    addEmptyField(':::: Run Normal Tests ::::');
+    assert( myArray.indexOf("apple") === 0, 'Array.IndexOf');
+    assert( myArray.indexOf("pear") === -1, 'Array.IndexOf');
+
+    assert( myArray.lastIndexOf("apple") === 3, 'Array.lastIndexOf');
+    assert( myArray.lastIndexOf("banana") === 4, 'Array.lastIndexOf');
+
+    myArray.forEach(function (key,value) {
+        if (key !== myArray[i++]) success = false;
+    });
+
+    assert( success ,'Array.forEach');
+
+    /** every element should match condition **/
+    assert( myArray.every(function (value, index, array) { return value.length > 1; }) === true, 'Array.every');
+    /** every element should fail condition **/
+    assert( myArray.every(function (value, index, array) { return value.length > 5; }) === false, 'Array.every');
+    /** at least 1 element should match condition **/
+    assert( myArray.some(function (value, index, array) { return value.length < 5; }) === true, 'Array.some');
+    /** at least 1 element should fail condition **/
+    assert( myArray.some(function (value, index, array) { return value.length > 6; }) === false, 'Array.some');
+
+
+    transformedArray = myArray.map(function (value, index, array) {
+      return value + extraString;
+    });
+
+    success = true;
+    for (i = 0; i < transformedArray.length; i++) {
+        if ( transformedArray[i].length - extraString.length !==  myArray[i].length) success = false;
+    };
+
+    transformedArray = [];
+
+    assert( success ,'Array.map');
+
+    assert( myArray.filter(function (value, index, array) { return value.length > 5 }).length === 2,'Array.filter');
+    assert( myArray.filter(function (value, index, array) { return value.length > 7 }).length === 0,'Array.filter');
+
+    assert( myArray.reduce(function (accum, value, index, array) { return accum + value; }).length === myArray.join('').length, 'Array.reduce' );
+
+    transformedArray = myArray.reverse().join('');
+
+
+    assert( myArray.reduceRight(function (accum, value, index, array) { return value + accum; }) === transformedArray, 'Array.reduceRight' );
+    transformedArray = [];
+
+</script>
+</body>
+</html>
